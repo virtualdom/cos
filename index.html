@@ -54,6 +54,10 @@
 
         let socials = "";
 
+        if (!row.data[NAME].trim()) {
+          return;
+        }
+
         const instagramHandle = row.data[INSTAGRAM].trim();
         const facebookHandle = row.data[FACEBOOK].trim();
         const tiktokHandle = row.data[TIKTOK].trim();
@@ -92,7 +96,7 @@
             <p>${row.data[DESCRIPTION]}</p>
             <p>${socials}</p>
 
-            <b><i>#cedarsdallas #cedarsopenstudios</i></b>
+            <b><i>${hashtags}</i></b>
           </div>
           <hr>
         `);
