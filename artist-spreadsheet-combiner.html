@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COS Helpers</title>
+  <script type="text/javascript" src="js/jquery/jquery-3.7.1.min.js"></script>
+  <script type="text/javascript" src="js/PapaParse/papaparse.min.js"></script>
+</head>
+<body style="padding: 2% 15%; width: 70%;">
+    <h1>COS Multi-Artist Jotform Output Organizer</h1>
+    <p>Make sure the tour date, time, and hashtags are set correctly.</p>
+    <p>Select the spreadsheet. <b>File type must be CSV!</b></p>
+    <input type="file" id="file" style="width:50%;">
+    <br>
+    <br>
+    <label for="submit">Click to generate posts:</label>
+    <button id="submit" name="submit" class="green">Generate</button>
+    <br>
+    <br>
+    <details>
+      <summary><b>⬅️ ⚠️ First time using this? See instructions here</b></summary>
+      <br>
+      <p>Ensure that the following properties align with the following columns.</p>
+      <ol>
+        <li><b>Submission Date</b> should be column <b><span id="SUBMISSION_DATE">A</span></b>.</li>
+        <li><b>Collective/Gallery name</b> should be column <b><span id="GALLERY_NAME">C</span></b>.</li>
+        <li><b>Street Address</b> should be column <b><span id="ADDRESS_STREET">D</span></b>.</li>
+        <li><b>Postal / Zip Code</b> should be column <b><span id="ADDRESS_ZIP">E</span></b>.</li>
+        <li><b>Gallery Email</b> should be column <b><span id="GALLERY_EMAIL">F</span></b>.</li>
+        <li><b>Gallery Main Artwork Category</b> should be column <b><span id="GALLERY_CATEGORIES">G</span></b>.</li>
+        <li><b>Gallery Demo Schedules</b> should be column <b><span id="GALLERY_DEMOS">H</span></b>.</li>
+        <li><b>Gallery Instagram</b> should be column <b><span id="GALLERY_INSTAGRAM">I</span></b>.</li>
+        <li><b>Gallery Facebook</b> should be column <b><span id="GALLERY_FACEBOOK">J</span></b>.</li>
+        <li><b>Gallery TikTok</b> should be column <b><span id="GALLERY_TIKTOK">K</span></b>.</li>
+        <li><b>Gallery ADA Compliance</b> should be column <b><span id="GALLERY_ADA">L</span></b>.</li>
+        <li><b>Gallery Promo Photo Permission</b> should be column <b><span id="GALLERY_PHOTO_PERM">M</span></b>.</li>
+        <li><b>Gallery Parking Information</b> should be column <b><span id="GALLERY_PARKING">N</span></b>.</li>
+        <li><b>Gallery Website</b> should be column <b><span id="GALLERY_WEBSITE">O</span></b>.</li>
+        <li><b>Gallery Description</b> should be column <b><span id="GALLERY_DESCRIPTION">P</span></b>.</li>
+        <li><b>The list of artists and their socials</b> should be column <b><span id="ARTISTS">Q</span></b>.</li>
+        <li><b>The Gallery's contact's first name</b> should be column <b><span id="GALLERY_CONTACT_FIRST_NAME">R</span></b>.</li>
+        <li><b>The Gallery's contact's last name</b> should be column <b><span id="GALLERY_CONTACT_LAST_NAME">S</span></b>.</li>
+        <li><b>The Gallery's contact's phone number</b> should be column <b><span id="GALLERY_CONTACT_PHONE">T</span></b>.</li>
+        <li><b>Gallery images</b> should be column <b><span id="GALLERY_IMAGES">U</span></b>.</li>
+        <li><b>Artist images</b> should be column <b><span id="ARTIST_IMAGES">V</span></b>.</li>
+        <li><b>Additional comments</b> should be column <b><span id="GALLERY_ADDITIONAL_COMMENTS">W</span></b>.</li>
+        <li><b>Payment total</b> should be column <b><span id="TOTAL_AMOUNT">Y</span></b>.</li>
+      </ol>
+      <p>If the format of the spreadsheet has changed and the columns don't match up, let Dom know to change the columns in the code.</p>
+    </details>
+    <br><br>
+    <hr>
+    <div id="here" style="margin-top: 10px;">
+
+    </div>
+
+    <script type="text/javascript">
+      var config = {
+        step: processRow,
+        complete: finishCSV
+      };
+
+      const SUBMISSION_DATE = 0;;
+      const GALLERY_NAME = 2;;
+      const ADDRESS_STREET = 3;;
+      const ADDRESS_ZIP = 4;;
+      const GALLERY_EMAIL = 5;;
+      const GALLERY_CATEGORIES = 6;
+      const GALLERY_DEMOS = 7;
+      const GALLERY_INSTAGRAM = 8;
+      const GALLERY_FACEBOOK = 9;
+      const GALLERY_TIKTOK = 10;
+      const GALLERY_ADA = 11;
+      const GALLERY_PHOTO_PERM = 12;
+      const GALLERY_PARKING = 13;
+      const GALLERY_WEBSITE = 14;
+      const GALLERY_DESCRIPTION = 15;
+      const ARTISTS = 16;
+      const GALLERY_CONTACT_FIRST_NAME = 17;
+      const GALLERY_CONTACT_LAST_NAME = 18;
+      const GALLERY_CONTACT_PHONE = 19;
+      const GALLERY_IMAGES = 20;
+      const ARTIST_IMAGES = 21;
+      const GALLERY_ADDITIONAL_COMMENTS = 22;
+      const TOTAL_AMOUNT = 24;
+
+      const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+
+      $(document).ready(function() {
+        $("#SUBMISSION_DATE").html(alphabet[SUBMISSION_DATE]);
+        $("#GALLERY_NAME").html(alphabet[GALLERY_NAME]);
+        $("#ADDRESS_STREET").html(alphabet[ADDRESS_STREET]);
+        $("#ADDRESS_ZIP").html(alphabet[ADDRESS_ZIP]);
+        $("#GALLERY_EMAIL").html(alphabet[GALLERY_EMAIL]);
+        $("#GALLERY_CATEGORIES").html(alphabet[GALLERY_CATEGORIES]);
+        $("#GALLERY_DEMOS").html(alphabet[GALLERY_DEMOS]);
+        $("#GALLERY_INSTAGRAM").html(alphabet[GALLERY_INSTAGRAM]);
+        $("#GALLERY_FACEBOOK").html(alphabet[GALLERY_FACEBOOK]);
+        $("#GALLERY_TIKTOK").html(alphabet[GALLERY_TIKTOK]);
+        $("#GALLERY_ADA").html(alphabet[GALLERY_ADA]);
+        $("#GALLERY_PHOTO_PERM").html(alphabet[GALLERY_PHOTO_PERM]);
+        $("#GALLERY_PARKING").html(alphabet[GALLERY_PARKING]);
+        $("#GALLERY_WEBSITE").html(alphabet[GALLERY_WEBSITE]);
+        $("#GALLERY_DESCRIPTION").html(alphabet[GALLERY_DESCRIPTION]);
+        $("#ARTISTS").html(alphabet[ARTISTS]);
+        $("#GALLERY_CONTACT_FIRST_NAME").html(alphabet[GALLERY_CONTACT_FIRST_NAME]);
+        $("#GALLERY_CONTACT_LAST_NAME").html(alphabet[GALLERY_CONTACT_LAST_NAME]);
+        $("#GALLERY_CONTACT_PHONE").html(alphabet[GALLERY_CONTACT_PHONE]);
+        $("#GALLERY_IMAGES").html(alphabet[GALLERY_IMAGES]);
+        $("#ARTIST_IMAGES").html(alphabet[ARTIST_IMAGES]);
+        $("#GALLERY_ADDITIONAL_COMMENTS").html(alphabet[GALLERY_ADDITIONAL_COMMENTS]);
+        $("#TOTAL_AMOUNT").html(alphabet[TOTAL_AMOUNT]);
+      });
+
+      const csvArray = [];
+
+      function processRow (row) {
+        const galleryRow = [
+          "", // Lily
+          "", // Nabila
+          row.data[GALLERY_NAME], // Gallery Name
+          row.data[ADDRESS_STREET], // Street Address
+          row.data[ADDRESS_ZIP], // Zip
+          row.data[GALLERY_EMAIL], // Email
+          row.data[GALLERY_CATEGORIES], // Category
+          row.data[GALLERY_DEMOS], // Demos
+          row.data[GALLERY_INSTAGRAM], // Instagram:
+          row.data[GALLERY_FACEBOOK], // Facebook:
+          row.data[GALLERY_TIKTOK], // TikTok:
+          row.data[GALLERY_WEBSITE], // Website:
+          row.data[GALLERY_DESCRIPTION], // Description
+          row.data[GALLERY_ADA], // ADA
+          row.data[GALLERY_PARKING], // Parking?
+          row.data[GALLERY_PHOTO_PERM], // Photo Permission
+          row.data[GALLERY_CONTACT_FIRST_NAME], // First Name
+          row.data[GALLERY_CONTACT_LAST_NAME], // Last Name
+          row.data[GALLERY_CONTACT_PHONE], // Phone Number
+          row.data[GALLERY_IMAGES], // Images
+          "", // Tour History
+          "", // Race / ethnicity?
+          "", // Age
+          "", // Gender
+          row.data[GALLERY_ADDITIONAL_COMMENTS], // Comments
+          row.data[TOTAL_AMOUNT], // Registration
+          "", // Hosting Artists?
+          "" // CARDS
+        ];
+
+        csvArray.push(galleryRow);
+
+        artists = row.data[ARTISTS].split("\n");
+
+        for (let i = 0; i < artists.length; i++) {
+          const parts = artists[i].split(",");
+
+          const possibleFirstName = parts[0].split(" ")[0];
+          const possibleLastName = parts[0].split(" ").slice(1).join(" ");
+
+          const artistRow = [
+            "", // Lily
+            "", // Nabila
+            parts[0] ? parts[0].trim() : "", // Artist Name
+            row.data[ADDRESS_STREET], // Street Address
+            row.data[ADDRESS_ZIP], // Zip
+            parts[1] ? parts[1].trim() : "", // Email
+            row.data[GALLERY_CATEGORIES], // Category
+            "", // Demos
+            parts[2] ? parts[2].trim() : "", // Instagram:
+            parts[3] ? parts[3].trim() : "", // Facebook:
+            parts[4] ? parts[4].trim() : "", // TikTok:
+            "", // Website:
+            "", // Description
+            row.data[GALLERY_ADA], // ADA
+            row.data[GALLERY_PARKING], // Parking?
+            row.data[GALLERY_PHOTO_PERM], // Photo Permission
+            possibleFirstName, // First Name
+            possibleLastName, // Last Name
+            "", // Phone Number
+            row.data[ARTIST_IMAGES], // Images
+            "", // Tour History
+            "", // Race / ethnicity?
+            "", // Age
+            "", // Gender
+            "", // Comments
+            "", // Registration
+            "", // Hosting Artists?
+            "" // CARDS
+          ];
+
+          csvArray.push(artistRow);
+        }
+      }
+
+      function saveTextFile(filename, content) {
+        const blob = new Blob([content], { type: "text/plain" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+      function getfilename() {
+        const now = new Date();
+
+        const year = now.getFullYear();
+        const month = String(now.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+        const day = String(now.getDate()).padStart(2, "0");
+        const hours = String(now.getHours()).padStart(2, "0");
+        const minutes = String(now.getMinutes()).padStart(2, "0");
+        const seconds = String(now.getSeconds()).padStart(2, "0");
+
+        return `${year}-${month}-${day}-${hours}-${minutes}-${seconds}-output.csv`;
+      }
+
+      function finishCSV() {
+        saveTextFile(getfilename(), Papa.unparse(csvArray));
+      }
+
+      $('#submit').click(function() {
+          $('#here').empty();
+          $('#file').parse({
+            config: config
+          });
+      });
+    </script>
+</body>
+</html>
+
+
+
+
+
