@@ -116,6 +116,10 @@
       const csvArray = [];
 
       function processRow (row) {
+        if (row.data < ARTISTS) {
+          return
+        }
+
         const galleryRow = [
           "", // Lily
           "", // Nabila
