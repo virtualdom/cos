@@ -113,7 +113,7 @@
         $("#TOTAL_AMOUNT").html(alphabet[TOTAL_AMOUNT]);
       });
 
-      const csvArray = [];
+      let csvArray = [];
 
       function processRow (row) {
         if (row.data < ARTISTS) {
@@ -156,7 +156,7 @@
         artists = row.data[ARTISTS].split("\n");
 
         for (let i = 0; i < artists.length; i++) {
-          const parts = artists[i].split(",");
+          const parts = artists[i].split(",").map(part=>part.trim());
 
           const possibleFirstName = parts[0].split(" ")[0];
           const possibleLastName = parts[0].split(" ").slice(1).join(" ");
@@ -168,11 +168,11 @@
             row.data[ADDRESS_STREET], // Street Address
             row.data[ADDRESS_ZIP], // Zip
             parts[1] ? parts[1].trim() : "", // Email
-            row.data[GALLERY_CATEGORIES], // Category
+            parts[5] && parts[5].trim() && parts[5].toLowerCase() !== "none" ? parts[5].trim() : row.data[GALLERY_CATEGORIES], // Category
             "", // Demos
-            parts[2] ? parts[2].trim() : "", // Instagram:
-            parts[3] ? parts[3].trim() : "", // Facebook:
-            parts[4] ? parts[4].trim() : "", // TikTok:
+            parts[2] && parts[2].toLowerCase() !== "none" ? parts[2].trim() : "", // Instagram:
+            parts[3] && parts[3].toLowerCase() !== "none" ? parts[3].trim() : "", // Facebook:
+            parts[4] && parts[4].toLowerCase() !== "none" ? parts[4].trim() : "", // TikTok:
             "", // Website:
             "", // Description
             row.data[GALLERY_ADA], // ADA
@@ -224,6 +224,7 @@
       }
 
       $('#submit').click(function() {
+          csvArray = [];
           $('#here').empty();
           $('#file').parse({
             config: config
